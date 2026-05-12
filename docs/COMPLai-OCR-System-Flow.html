@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COMPLai · OCR &amp; signboard system — flow &amp; logic</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+      securityLevel: "loose",
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        nodeSpacing: 50,
+        rankSpacing: 58,
+        padding: 20,
+        curve: "basis",
+      },
+      themeVariables: {
+        fontSize: "20px",
+        fontFamily: "Segoe UI, system-ui, sans-serif",
+        primaryTextColor: "#e6edf3",
+        primaryColor: "#21262d",
+        lineColor: "#8b949e",
+        secondaryColor: "#161b22",
+        tertiaryColor: "#0d1117",
+      },
+    });
+  </script>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --b: #30363d;
+      --accent: #58a6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+    header {
+      border-bottom: 1px solid var(--b);
+      padding: 1.5rem 1.5rem 1.25rem;
+      background: var(--card);
+    }
+    h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.35rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; }
+    main { max-width: 58rem; margin: 0 auto; padding: 1.5rem; }
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 2rem 0 0.75rem;
+      color: #c9d1d9;
+      border-bottom: 1px solid var(--b);
+      padding-bottom: 0.4rem;
+    }
+    h3 { font-size: 1.05rem; margin: 1.25rem 0 0.5rem; color: var(--accent); }
+    p, li { color: #c9d1d9; }
+    ul, ol { padding-left: 1.35rem; }
+    .mermaid { margin: 1rem 0; padding: 1rem; background: #0d1117; border: 1px solid var(--b); border-radius: 8px; overflow-x: auto; }
+    .flowchart-endtoend {
+      min-height: 42rem;
+      padding: 1.5rem 1rem 2.5rem;
+      overflow: auto;
+    }
+    .flowchart-endtoend .mermaid svg {
+      min-width: 42rem;
+      min-height: 36rem;
+      max-width: none !important;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--b);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 0.75rem 0;
+    }
+    .card strong { color: #79c0ff; }
+    code, .mono { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.88em; }
+    a { color: var(--accent); }
+    .path { color: #7ee787; font-size: 0.9em; }
+    kbd { background: #21262d; border: 1px solid var(--b); border-radius: 4px; padding: 0.1em 0.45em; font-size: 0.85em; }
+    table.simple { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 0.75rem 0; }
+    table.simple th, table.simple td { border: 1px solid var(--b); padding: 0.45rem 0.6rem; text-align: left; }
+    table.simple th { background: var(--card); color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>COMPLai · OCR &amp; signboard compliance — flowchart &amp; end-to-end logic</h1>
+    <p class="subtitle">
+      This document describes what the stack does: <strong>React client</strong> → <strong>FastAPI backend</strong> →
+      <strong>Google Cloud Vision</strong> → <strong>SignboardGeometryAgent</strong> (OpenCV) →
+      <strong>UniversalComplianceEngine</strong> (COMPLai) → optional <strong>governance</strong> heuristics &amp; <strong>audit</strong> storage.
+    </p>
+  </header>
+  <main>
+    <h2>1. System context</h2>
+    <p>
+      The product <strong>reads signboard images</strong> (after optional perspective correction in the browser),
+      extracts text and structure with <strong>Document Text Detection</strong>, measures <strong>where ink is</strong> in a
+      <strong>canonical rectified frame</strong>, and <strong>scores</strong> whether a <strong>state / UT&rsquo;s</strong> mandatory
+      script (e.g. Kannada, Marathi) meets a <strong>minimum threshed-ink share</strong> when the user has chosen that jurisdiction.
+      <strong>Vision is not given language hints</strong> in production — script is auto-detected. The <strong>state code</strong>
+      only drives <strong>COMPLai</strong> rules, not the OCR call.
+    </p>
+
+    <h2>2. End-to-end user flow (web app)</h2>
+    <p style="color: var(--muted); font-size: 0.95rem;">Scroll horizontally if needed — the chart is drawn large for readability.</p>
+    <div class="flowchart-endtoend">
+    <div class="mermaid">
+flowchart TB
+  subgraph S1["React frontend"]
+    direction TB
+    A["1 · Upload or choose image"] --> B["2 · Optional CornerCanvas warp"]
+    B --> C["3 · User selects State or UT"]
+    C --> D["4 · POST /api/ocr — file + state_code Form field"]
+  end
+  subgraph S2["FastAPI main.py"]
+    direction TB
+    D --> P["5 · Preprocess — transcode / CLAHE / HSV boost"]
+    P --> V["6 · Google Vision — document text + logos no language hints"]
+    V --> T["7 · Build TextBlocks · GSTIN · optional Gemini English"]
+    T --> G["8 · SignboardGeometryAgent — threshed ink by script"]
+    G --> C1["9 · COMPLai — UniversalComplianceEngine for state_code"]
+    C1 --> E["10 · evaluate_compliance vs min threshed share"]
+    E --> Gov["11 · merge_governance_compliance heuristics"]
+    Gov --> R["12 · OcrResult JSON + save audit record"]
+  end
+  R --> UI["13 · Show results and review blocks"]
+  UI --> Put["14 · User saves · PUT /api/audit with verified_text_json"]
+  Put --> R2["15 · Re-bucket threshed ink to verified script"]
+    </div>
+    </div>
+
+    <h2>3. What happens in <code>/api/ocr</code> (order of operations)</h2>
+    <ol>
+      <li><strong>Upload</strong> — Raw bytes, MIME, filename; may <strong>transcode</strong> (AVIF/HEIC &rarr; PNG) for Vision.</li>
+      <li>
+        <strong>Raster preprocess</strong> (<code>vision_preprocess.py</code> / <code>image_prep.py</code>):
+        optional high-key <strong>CLAHE</strong> (LAB), then <strong>light-aware</strong> HSV &ldquo;signboard pop&rdquo;;
+        optional <code>VISION_OCR_PREBINARIZE</code> with smart path for washed images.
+      </li>
+      <li>
+        <strong>Google Vision</strong> — <code>ImageContext()</code> with <strong>no <code>language_hints</code></strong>.
+        Features: <strong>Document Text Detection</strong> + <strong>Logo Detection</strong>.
+      </li>
+      <li>
+        <strong>Page / block / word</strong> tree &rarr; full text, per-block bounds, <strong>language hints from Vision</strong> on
+        <code>property.detected_languages</code> (per block; not from hints).
+      </li>
+      <li>
+        <strong>Threshed ink</strong> — <code>SignboardGeometryAgent</code> uses the <strong>same</strong> image (processed buffer)
+        and the Vision <strong>response</strong>: homography to 1000&times;600, per-block or per-word ink via adaptive threshold,
+        aggregate <code>language_ratios</code>, <code>primary_ratio</code>, <code>per_block_threshed_board_pct</code>.
+      </li>
+      <li>
+        <strong>Location</strong> — Form <code>state_code</code> and/or <code>latitude</code>+<code>longitude</code> &rarr; optional
+        <code>reverse_geocode</code> to infer state.
+      </li>
+      <li>
+        <strong>COMPLai</strong> — <code>UniversalComplianceEngine</code> (in <code>compliance_rules.py</code>) maps
+        <code>state_code</code> to <code>primary</code> ISO, <code>min_primary_area_pct</code> &rarr; <code>min_local_lang_pct</code> for
+        <code>evaluate_compliance</code>. If <strong>no state</strong>, compliance = <strong>PENDING &mdash; STATE REQUIRED</strong>.
+      </li>
+      <li>
+        <strong>Governance</strong> (optional) — <code>governance_evaluate.py</code> merges public-policy-style checks (e.g. KA
+        layout hints) on top of the threshed result message.
+      </li>
+      <li>
+        <strong>Persist</strong> — <code>AuditRecord</code> in SQLite/Postgres, image in local/S3, JSON snapshot for replay.
+      </li>
+    </ol>
+
+    <h2>4. SignboardGeometryAgent — internal logic (conceptual)</h2>
+    <div class="mermaid">
+flowchart TB
+  subgraph input["Input"]
+    I1[BGR image]
+    I2[Vision response plus corners]
+  end
+  I1 --> W[Homography to 1000x600]
+  I2 --> W
+  W --> L[Map blocks to warped space]
+  L --> T[Adaptive threshold ink per group]
+  T --> C[CountNonZero per script]
+  C --> R[language_ratios]
+  R --> P[Pass fail vs threshold]
+    </div>
+    <p class="path">
+      Code: <code>backend/signboard_agent.py</code> — if Vision says <code>und</code>, the agent can <strong>infer</strong> script
+      from Unicode in block text via <code>indic_script_infer.py</code> (for ink bucketing, not a separate OCR model).
+    </p>
+
+    <h2>5. COMPLai — <code>UniversalComplianceEngine</code> &amp; <code>evaluate_compliance</code></h2>
+    <div class="card">
+      <p>
+        <strong>STATE_RULES</strong> (per state/UT): <code>primary_iso_code</code>,
+        <code>min_primary_area_pct</code> (0&ndash;1), <code>font_ratio_required</code> (e.g. Maharashtra: policy note only in
+        <code>details</code> — the flat test is still threshed-ink share).
+      </p>
+    </div>
+    <div class="mermaid">
+flowchart TB
+  S[state_code from user or geo] --> N[Normalize codes TS to TG UK to UT]
+  N --> L{In STATE_RULES?}
+  L -->|no| PEND[pending or uncertain]
+  L -->|yes| R[Build location_rules]
+  R --> M{Has threshed ratios?}
+  M -->|no| U[uncertain]
+  M -->|yes| V[Remap with verified text json]
+  V --> T[Test min share or mono exemption]
+  T --> F[pass or fail]
+    </div>
+    <p>
+      <strong>Review / <code>PUT /api/audit/&#123;id&#125;</code>:</strong> <code>verified_text_json</code> updates block text
+      and <strong>verified language</strong>. <code>recompute_geometry_after_verified_overrides</code> re-buckets
+      threshed mass by <strong>user language</strong> so e.g. Kannada share is counted under <code>kn</code> for Karnataka.
+    </p>
+
+    <h2>6. Batch COCO report script (offline evaluation)</h2>
+    <p class="path">
+      <code>backend/scripts/coco_batch_ocr.py</code> — reads a Roboflow <strong>zip</strong> (<code>train/ test/ valid</code> images),
+      runs the same <strong>preprocess + Vision (doc text only) + SignboardGeometryAgent</strong> as the API, writes
+      <code>backend/data/coco_batch_ocr_report.json</code>. HTML: <code>scripts/coco_batch_report_to_html.py</code> &rarr; <code>docs/</code>.
+    </p>
+
+    <h2>7. Key files (reference)</h2>
+    <table class="simple">
+      <thead>
+        <tr><th>Area</th><th>Files</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>HTTP API, OCR entry</td><td><code>backend/main.py</code></td></tr>
+        <tr><td>Threshed geometry, ink</td><td><code>backend/signboard_agent.py</code></td></tr>
+        <tr><td>State rules, evaluate, verified remap</td><td><code>backend/compliance_rules.py</code></td></tr>
+        <tr><td>Indic script fallback for ink</td><td><code>backend/indic_script_infer.py</code></td></tr>
+        <tr><td>Image preprocess</td><td><code>backend/vision_preprocess.py</code>, <code>image_prep.py</code></td></tr>
+        <tr><td>Governance merge</td><td><code>backend/governance_evaluate.py</code></td></tr>
+        <tr><td>Frontend</td><td><code>frontend/src/App.tsx</code>, <code>CornerCanvas.tsx</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2>8. How to open this file</h2>
+    <p>
+      Open with <strong>Edge</strong> or <strong>Chrome</strong> (local file <kbd>file://</kbd> is fine). Mermaid diagrams render from a CDN;
+      you need a network connection the first time. If blocks stay raw text, check ad-blockers or offline mode.
+    </p>
+  </main>
+</body>
+</html>

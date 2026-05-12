@@ -1,0 +1,5683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COCO batch OCR — per-image report</title>
+  <style>
+    :root { --bg: #0f1419; --card: #1a2332; --text: #e6edf3; --muted: #8b949e; --bad: #f85149; --b: #30363d; --sum: #58a6ff; }
+    * { box-sizing: border-box; }
+    body { font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 1.5rem; line-height: 1.5; font-size: 14px; max-width: 100%; }
+    h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 0.5rem; }
+    .howto { background: #21262d; border: 1px solid var(--b); border-radius: 8px; padding: 0.75rem 1rem; margin: 0 0 1rem; font-size: 13px; color: #c9d1d9; }
+    .howto code { background: #161b22; padding: 0.1em 0.35em; border-radius: 4px; font-size: 12px; }
+    .meta { color: var(--muted); margin-bottom: 1.25rem; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+    h2 { font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 0.65rem; color: #c9d1d9; border-bottom: 1px solid var(--b); padding-bottom: 0.35rem; }
+    table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 12px; min-width: 64rem; }
+    th, td { border: 1px solid var(--b); padding: 0.4rem 0.5rem; text-align: left; vertical-align: top; }
+    th { background: var(--card); color: #8b949e; font-weight: 600; position: sticky; top: 0; z-index: 1; }
+    tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+    .path { font-size: 11px; max-width: 20rem; word-break: break-all; font-family: ui-monospace, Consolas, monospace; }
+    .n { text-align: right; font-variant-numeric: tabular-nums; }
+    .err { color: var(--bad); font-size: 12px; }
+    .wrap { overflow-x: auto; border: 1px solid var(--b); border-radius: 6px; max-width: 100%; margin: 0.5rem 0; }
+    .analysis { font-size: 11px; color: #8b949e; max-width: 28rem; line-height: 1.4; }
+    .split-details { margin: 1rem 0; border: 1px solid var(--b); border-radius: 8px; padding: 0.5rem 0.75rem; background: #161b22; }
+    .split-details summary { cursor: pointer; color: var(--sum); font-size: 14px; margin-bottom: 0.5rem; }
+    @media (max-width: 800px) { th, td { font-size: 11px; padding: 0.3rem; } }
+  </style>
+</head>
+<body>
+  <h1>Storeboard COCO batch — per-image analysis</h1>
+  <div class="howto">
+    <strong>Reading this report:</strong> Each image has metrics from the same pipeline as <code>/api/ocr</code> (Vision + threshed geometry + COMPLai agent status).
+    The <strong>Analysis</strong> column summarizes the row. Raw line-by-line OCR text is <em>not</em> stored in the JSON export — regenerate the batch with script changes if you need full text.
+    Open in <strong>Edge/Chrome</strong> if a preview tab is slow. For OneDrive, use <em>Always keep on this device</em> on the file.
+  </div>
+  <p class="meta">Zip: C:\Users\ayusi\Downloads\merged-storeboard-gstin.v1i.coco.zip
+Generated (UTC): 2026-04-27T11:56:41.535576+00:00
+State hint: KA · Wall time: 319.4 s
+Total images: 171
+</p>
+
+  <h2>Planned per split</h2>
+  <p class="meta">{
+  &quot;train&quot;: 118,
+  &quot;test&quot;: 44,
+  &quot;valid&quot;: 9
+}</p>
+
+  <h2>Aggregates (train / test / valid)</h2>
+  <div class="wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Split</th><th>Total</th><th>OK</th><th>Failed</th>
+        <th>Mean text len</th><th>Mean Vision blocks</th>
+        <th>Mean geometry conf</th><th>Mean call (s)</th><th>Silent-ink flags</th>
+      </tr>
+    </thead>
+    <tbody>
+<tr>
+  <td>train</td>
+  <td>118</td>
+  <td>118</td>
+  <td>0</td>
+  <td>230.0</td>
+  <td>8.4</td>
+  <td>0.997</td>
+  <td>2.05</td>
+  <td>0</td>
+</tr><tr>
+  <td>test</td>
+  <td>44</td>
+  <td>44</td>
+  <td>0</td>
+  <td>209.0</td>
+  <td>6.3</td>
+  <td>1.0</td>
+  <td>1.4</td>
+  <td>0</td>
+</tr><tr>
+  <td>valid</td>
+  <td>9</td>
+  <td>9</td>
+  <td>0</td>
+  <td>151.8</td>
+  <td>8.4</td>
+  <td>0.978</td>
+  <td>1.72</td>
+  <td>0</td>
+</tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>Per-image analysis by split (collapsible)</h2>
+<details class="split-details" open>
+  <summary><strong>train</strong> — 118 image(s) · per-image analysis</summary>
+  <div class="wrap">
+  <table>
+<thead>
+      <tr>
+        <th>Split</th>
+        <th>Path (in zip)</th>
+        <th>OK</th>
+        <th>Error</th>
+        <th>Text len</th>
+        <th>Vision blocks</th>
+        <th>Returned blocks</th>
+        <th>Size W×H</th>
+        <th>Geometry conf</th>
+        <th>Compliance (agent)</th>
+        <th>Dominant lang</th>
+        <th>Duration s</th>
+        <th>Silent ink</th>
+        <th>GSTIN count</th>
+        <th>Analysis (per image)</th>
+      </tr>
+    </thead>
+    <tbody>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00000_jpg.rf.27f91fbc25b01cb8068112abde6661e4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">339</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.85</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 339 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00002_jpg.rf.f02e675c507153d93124b300ae4889db.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">160</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.511</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 160</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00004_jpeg_jpg.rf.4e2f4514e816d961e7ed58bc461b5e1e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">124</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.82</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 124</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00005_jpeg_jpg.rf.8c3f94fd8fa322236f21de52ab040d75.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">284</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.322</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 284</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00009_jpeg_jpg.rf.64f60c95fad69557da079d7b22252047.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">173</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.844</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 173</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00013_jpeg_jpg.rf.f56fc6e1b1e0145b69271af1cd466d42.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">153</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.612</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 153 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00014_jpeg_jpg.rf.c986e3781bba9f989f7a08035ebddb7a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">180</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.745</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 180 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00016_jpeg_jpg.rf.123db5293ea8c57e155951ed452a806e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">176</td>
+  <td class="n">15</td>
+  <td class="n">15</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.271</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 176 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00017_jpeg_jpg.rf.35424b916d9b91e6959ec6c1a8d67571.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">289</td>
+  <td class="n">17</td>
+  <td class="n">17</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.452</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 289</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00018_jpeg_jpg.rf.a9c3c65ffd5b88e4c26d057acbebb748.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">48</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.114</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 48</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00019_jpeg_jpg.rf.47d9e5f52f3d2ead54364277933bf9af.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">322</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.727</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 322</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00020_jpeg_jpg.rf.93e44157ce1767166b7046112b5c0f27.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">16</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.278</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 16</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00022_jpeg_jpg.rf.3ec5a1fe717299a758734001540aa329.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">278</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.252</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 278</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00023_jpeg_jpg.rf.de49a35d8e58827fbc72eff9a7465320.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">127</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>hi</td>
+  <td class="n">1.319</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant hi · chars 127</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00024_jpeg_jpg.rf.2ca66c2360d38fa2598f7c8ea311eccf.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">110</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>yo</td>
+  <td class="n">1.112</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant yo · chars 110</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00025_jpeg_jpg.rf.75b34b4d5b3816035c758ff886cd982e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">251</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.502</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 251 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00026_jpeg_jpg.rf.aea3bf78ecb20e01bbc3e8357128505d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">295</td>
+  <td class="n">15</td>
+  <td class="n">15</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.618</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 295</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00027_jpeg_jpg.rf.d8f7c3fd52c9d16b53af848ba241b3e4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">199</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.306</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 199 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00028_jpg.rf.0f366867128bc0d1756a1812268b635b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">319</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.926</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 319 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00030_jpeg_jpg.rf.75c906a2bb1b3e2d91cc0ed91f8500a0.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">138</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.076</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 138 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00031_jpg.rf.a0150cffc3af56ca2467673c271d34b4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">139</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.06</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 139</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00033_jpeg_jpg.rf.c55a55a4888e2a323548c19c5549c4ff.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">211</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.413</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 211</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00034_jpg.rf.adeebc127c2f8eb8369b22fb071a3c02.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">211</td>
+  <td class="n">15</td>
+  <td class="n">15</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.519</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 211 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00035_jpg.rf.f3acd7a696f0a27af0e4127b5239d118.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">252</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.166</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 252</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00036_jpeg_jpg.rf.1d96e5c30c369e8b2476a083d46edbd6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">102</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.256</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 102</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00038_jpeg_jpg.rf.21a490d30ea37e41f2586dfc25315997.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">243</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.56</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 243</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00039_jpeg_jpg.rf.6cb3681932326af1bcff9cfb63112d84.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">25</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.238</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 25</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00040_jpeg_jpg.rf.88f10ae07763db24e5377282b4eb480d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">280</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.593</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 280</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00041_jpg.rf.33aeff5dffc6224f653f817daf779d94.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">197</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.277</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 197</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00043_jpg.rf.3ed72872d46916ecbeabf4ce42cd5fa0.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">42</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.475</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 42</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00044_jpg.rf.343bdb15e9ff1cef25e92c584ef344e2.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">432</td>
+  <td class="n">20</td>
+  <td class="n">20</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.35</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 432</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00046_jpg.rf.23040700ff37371474d70a986375ac75.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">64</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.146</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 64</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00053_jpeg_jpg.rf.845903390d1e96684b4243176e64987d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">129</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>hi</td>
+  <td class="n">1.338</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant hi · chars 129</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00059_jpeg_jpg.rf.e35c3fbb0c711450184a5c3c62e8443c.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">431</td>
+  <td class="n">19</td>
+  <td class="n">19</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.556</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 431</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00060_jpg.rf.0cc3fbfa520d3d5fad94588f3c88c7fa.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">433</td>
+  <td class="n">13</td>
+  <td class="n">13</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>hi</td>
+  <td class="n">51.751</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant hi · chars 433</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00063_jpg.rf.9ea050f5f4417a86aad6460e6a8be65a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">128</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>und</td>
+  <td class="n">1.539</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant und · chars 128</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00065_png_jpg.rf.5b2fc6c047496b8d7e44d8c2e9ce93c6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">96</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.154</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 96 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00067_png_jpg.rf.588029648c56c1fb530a846822b202aa.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">196</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.834</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 196</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00068_png_jpg.rf.8f3ae32524b66fdea6ae0749cca140cd.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">118</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>gom</td>
+  <td class="n">1.493</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant gom · chars 118 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00069_png_jpg.rf.73bbc0e1261757126e7ead4995fdd543.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">491</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.692</td>
+  <td>no</td>
+  <td class="n">2</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 491 · GSTIN fields ×2</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00073_png_jpg.rf.d2b7f93530eef7d5ac729e8d69275ef2.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">9</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">0.718</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.205</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 0.718 · agent FAIL · dominant en · chars 9</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00075_png_jpg.rf.001f0ee0bde1af8de6d93cb700cbcd33.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">164</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">0.924</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.15</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 0.924 · agent FAIL · dominant en · chars 164</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00076_png_jpg.rf.c5281e50ec47f9f0a0bf594d686869f6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">62</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.359</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 62</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00077_png_jpg.rf.9c2911ba3aa16caa255f701071ffd42c.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">200</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.259</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 200</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00081_png_jpg.rf.602f98071312aa10a25b399d5e52a627.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">306</td>
+  <td class="n">14</td>
+  <td class="n">14</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.558</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 306</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00083_png_jpg.rf.4c29897b5793db21b12492d23bdab530.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">297</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.159</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 297</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00088_jpeg_jpg.rf.572ae38250cb1672ae19006510c22936.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">177</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.459</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 177</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00090_jpg.rf.df95bef7b57795a922cb2dd8851fb0a1.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">292</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.43</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 292 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00091_jpeg_jpg.rf.3b818d5dde23980afea5ac78d3338316.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">56</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.934</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 56</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00092_jpg.rf.0b1be09250ddf83d7c30dad8f0d83112.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">229</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.179</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 229 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00094_jpeg_jpg.rf.48712cd2a6ca78cb23bc57c2d37758d8.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">367</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.089</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 367</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00096_jpeg_jpg.rf.0967b2bdb0b7fc066046dc1dd3760608.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">287</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.453</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 287</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00101_jpeg_jpg.rf.cc7203625187e5ed10a124b44de15edb.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">54</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.132</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 54</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00003_jpg.rf.432c2d27db9e7ab688fd80d80abcc381.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">242</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.391</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 242</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00015_jpg.rf.db1e8a9f8a092799ea2476ef6f1cf99d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">129</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.273</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 129</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00019_jpg.rf.1b23c67799484be170f11cf0197c9271.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">399</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.501</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 399</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00025_jpg.rf.8936c015b2abc8dc7683205854f607b8.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">337</td>
+  <td class="n">18</td>
+  <td class="n">18</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>und</td>
+  <td class="n">2.822</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant und · chars 337</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00034_jpg.rf.8b769879e6004cb63f8205215a96fb47.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">174</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.706</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 174</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00038_jpg.rf.c20768de9e58e36d6141b5097afb6616.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">100</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.301</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 100</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00045_jpg.rf.bd8419e66cfecfb899f210d193e8d9b7.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">502</td>
+  <td class="n">18</td>
+  <td class="n">18</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.298</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 502</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00063_jpg.rf.a773bf66426ca3fc16c90733e4b3bb96.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">80</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>eo</td>
+  <td class="n">1.08</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant eo · chars 80</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00064_jpg.rf.e19bb98312f02f2bfa3b411919ec21e3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">482</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.239</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 482</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00065_jpg.rf.5f247e83d951df0c832bceeb00d07ae0.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">268</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.287</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 268</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00068_jpg.rf.078a3dc94ee4b4a3d598caae8e3e5423.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">157</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.316</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 157 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00075_jpg.rf.c413f0d6aaf9df46dc8ef2bd5033a71d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">324</td>
+  <td class="n">19</td>
+  <td class="n">19</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.837</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 324 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00084_jpg.rf.5d5d16693acdca408123550488975849.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">337</td>
+  <td class="n">13</td>
+  <td class="n">13</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.5</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 337</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00100_jpg.rf.bd0ea07f6c12a612668dda1a7b02fa9b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">171</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>kn</td>
+  <td class="n">1.191</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant kn · chars 171</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00112_jpg.rf.a51a3b0ad454e8b9dec9c97d11cd0eb9.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">142</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.332</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 142</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00125_jpg.rf.e85e98f70a9fb1879fc66d54fedc1ac7.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">148</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>te</td>
+  <td class="n">0.978</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant te · chars 148</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00127_jpg.rf.d46593a3e04cedc5ab602df84b15e0c4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">400</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.202</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 400</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00129_jpg.rf.9c538bd01015e7323f0e9ea54ef8e3bd.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">243</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.533</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 243</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00144_jpg.rf.d1c41eb3c6da5164f1e1e6f2b3ccc93d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">213</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.15</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 213</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00168_jpg.rf.2adf7f619ac33b3dfcca6b69f9b8a898.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">317</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">10.772</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 317 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00169_jpg.rf.96307405fc0dde1567efc114fcdeb529.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">302</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.216</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 302 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00178_jpg.rf.588fa90821cdaf88f1c1c6a6d29fb597.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">170</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.312</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 170</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00182_jpg.rf.91b32350e28ccd38b455847ddeb14e58.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">110</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.404</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 110</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00191_jpg.rf.7bddc953562c53b3600177a9ba02e0ea.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">197</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.223</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 197</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00195_jpg.rf.e3cb6a31f232eb8299378b61bf8cc389.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">113</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.077</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 113</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00199_jpg.rf.9c84f36f1ab56c9e86f51761afa04bf8.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">221</td>
+  <td class="n">13</td>
+  <td class="n">13</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.262</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 221</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00200_jpg.rf.8ac95250284fce1cfa20e4e8cc3943c3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">158</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.415</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 158</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00208_jpg.rf.2efb09cefeb57a5361bc1bfa356e4586.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">282</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.981</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 282</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00235_jpg.rf.33573b03d5704e2c3ff95b748a717b3e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">527</td>
+  <td class="n">23</td>
+  <td class="n">23</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.163</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 527</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00236_jpg.rf.8279f89d190fa5e6fe3d827d625bf501.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">241</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">4.963</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 241 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00242_jpg.rf.ede26a229e91a85e98e7902ab7140193.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">350</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.067</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 350 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00247_jpg.rf.96009753548c90f207d418c2c9aa05f6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">239</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.241</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 239</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00269_jpg.rf.0d27895596efa5ce4d41fdaf6e12cefc.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">252</td>
+  <td class="n">18</td>
+  <td class="n">18</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.404</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 252</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00276_jpg.rf.6725d74b52c285f85f465d5652550302.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">315</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.146</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 315 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00280_jpg.rf.eb1688a5c420a2d5ab7bfd80b84cf62f.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">153</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.057</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 153</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00295_jpg.rf.fc8896eb304d6f0a59f728a831e2fe96.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">71</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.114</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 71</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00318_jpg.rf.e059d4f353922125c385ff24bac24903.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">92</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.783</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 92</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00336_jpg.rf.162c3076509e5510f62c70a77040bc05.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">319</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.977</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 319 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00339_jpg.rf.bf2296b5701f0e50ed0a2dc2a350a0ee.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">16</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.538</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 16</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00366_jpg.rf.5736485eb9d1f2973204d714ea0dd923.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">296</td>
+  <td class="n">13</td>
+  <td class="n">13</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.048</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 296</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00387_jpg.rf.624bc92ea44da893e5755631e0a7034c.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">169</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.292</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 169</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00389_jpg.rf.c801b8f36f5b450d309941d3d67835da.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">247</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.2</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 247</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00415_jpg.rf.e677fd36ef0ee3bfe551108d223f32ed.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">269</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.33</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 269</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00416_jpg.rf.2e2799d76d8dc3eb339449b4e2c94c06.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">252</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.066</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 252</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00426_jpg.rf.cf9b81767ce07fa4f7d441389916cf02.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">249</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.013</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 249</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00428_jpg.rf.e3224b79134a2b3720780eeb04d03b34.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">190</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.32</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 190</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00431_jpg.rf.2e5b330a8211adf0159ddbf020c969dd.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">239</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.37</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 239</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00438_jpg.rf.234f1b6c71fcb37f352d429a3748d12f.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">82</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.976</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 82</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00441_jpg.rf.3d890464df05c4a9beac09e4b71f3b47.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">503</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.307</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 503</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00443_jpg.rf.bd6794cff1f6ca1c672498d1c6c4a5bc.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">499</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.348</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 499</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00455_jpg.rf.3d81df3afb6535c0c5e7bbac375d0f93.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">471</td>
+  <td class="n">20</td>
+  <td class="n">20</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.318</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 471</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00469_jpg.rf.3096b0a059375f80b5404728a1dc528b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">400</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.359</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 400 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00498_jpg.rf.6a9427a213c05eab6de36f331c8e6bcb.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">352</td>
+  <td class="n">14</td>
+  <td class="n">14</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.386</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 352</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00510_jpg.rf.bb8a79aff1e04351b6d33a2bcf9390ef.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">113</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.244</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 113</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00511_jpg.rf.e76d21e3f1acd2bc27a4333b57238053.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">204</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.084</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 204</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00534_jpg.rf.aa2b4e65f55256ee73c049f8e39d6eac.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">289</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.265</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 289 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00541_jpg.rf.839595fce6e82d086482964f6a64bc89.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">436</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.079</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 436</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00567_jpg.rf.a46d7c868c0d1cc7935da307e5c6fde4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">192</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.626</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 192</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00574_jpg.rf.793544c7941bc9bed37cfe3757291a97.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">201</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.182</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 201</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00582_jpg.rf.fec23d29a74b3889860ed94fbdf8a443.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">92</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>und</td>
+  <td class="n">0.853</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant und · chars 92</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00596_jpg.rf.14aaca1a8a0da7d19e0cc886225d9560.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">269</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.2</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 269</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00609_jpg.rf.71a60c3b941cee64a7ce979eddec3a3b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">256</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.452</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 256 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00618_jpg.rf.568ac647dfacdadefd2852bf15c89f61.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">270</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.208</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 270</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00620_jpg.rf.16a8d3c3095a6b99fdf26f493b57f198.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">263</td>
+  <td class="n">18</td>
+  <td class="n">18</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.547</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 263</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00624_jpg.rf.f205bfbb602cfb57665043857bf26eab.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">348</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.82</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 348</td></tr>
+    </tbody>
+  </table>
+  </div>
+</details>
+<details class="split-details" open>
+  <summary><strong>test</strong> — 44 image(s) · per-image analysis</summary>
+  <div class="wrap">
+  <table>
+<thead>
+      <tr>
+        <th>Split</th>
+        <th>Path (in zip)</th>
+        <th>OK</th>
+        <th>Error</th>
+        <th>Text len</th>
+        <th>Vision blocks</th>
+        <th>Returned blocks</th>
+        <th>Size W×H</th>
+        <th>Geometry conf</th>
+        <th>Compliance (agent)</th>
+        <th>Dominant lang</th>
+        <th>Duration s</th>
+        <th>Silent ink</th>
+        <th>GSTIN count</th>
+        <th>Analysis (per image)</th>
+      </tr>
+    </thead>
+    <tbody>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00037_jpg.rf.c01cc1644777ac447d4c2d4562585fa6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">243</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.519</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 243</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00045_jpg.rf.3212a189f8beced7ffc4d0146c775bf4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">42</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.299</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 42</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00049_jpg.rf.2b38d0c9e11e872173f73b889f71f09f.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">262</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.071</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 262</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00072_png_jpg.rf.9be1f265f85494520d091e361c3bdac9.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">18</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.34</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 18</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00078_png_jpg.rf.58f013fcd34af3334e323e20a87897ee.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">213</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.154</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 213</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00080_png_jpg.rf.73cfa71a9cc4e30fe9beb99a898c77ba.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">221</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.324</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 221</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00002_jpg.rf.b5a01bb283e3262f225eacd6dd9e95dd.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">122</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.297</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 122</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00028_jpg.rf.dd7444d4358f60dca2cb5ca5e1b05412.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">85</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>hi</td>
+  <td class="n">0.964</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant hi · chars 85</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00037_jpg.rf.3e4f8219a9fa539a8a372e4c86857e9d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">180</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.948</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 180</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00046_jpg.rf.07134ea6d8bdf94908ba7b4bb49653aa.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">73</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.113</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 73</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00048_jpg.rf.adea3704d21dfd3d1215e37eb2190637.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">109</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.596</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 109</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00062_jpg.rf.fad3a2a57d63f1d392fd099c7665ce34.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">104</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>it</td>
+  <td class="n">1.052</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant it · chars 104</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00072_jpg.rf.a909165160be21455998cba7e9159aca.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">302</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.878</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 302</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00082_jpg.rf.a193d1b00a36ca5e4f80d79c20e401c1.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">111</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.193</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 111</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00089_jpg.rf.6b9b29f6a84be1206d037968d9a4e86a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">158</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.055</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 158</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00092_jpg.rf.57483c9ff029c23b58e2a2ae47504add.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">313</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>co</td>
+  <td class="n">1.16</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant co · chars 313</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00099_jpg.rf.0d4359a9fdcc0f5289b5a9b2d965f0be.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">344</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.111</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 344</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00149_jpg.rf.612a1e2b848c42f522321704a6092892.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">177</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.09</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 177</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00162_jpg.rf.1e6f21a5409da444aabfb00a6fc33165.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">556</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.266</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 556</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00164_jpg.rf.1021403f9020a5358739558b0334b15a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">134</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.094</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 134</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00173_jpg.rf.3dbf0dbe15b8ce848ad9c7047f1d6c5c.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">190</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.189</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 190</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00232_jpg.rf.a33d6d2f516a8f5e02409111cda1a1a4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">397</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.842</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 397</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00233_jpg.rf.660dda19f8cd9d9abddb3779c48bd8df.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">227</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.423</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 227</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00243_jpg.rf.247ba5eb8eb3b3fbcd10a588de1241ea.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">90</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.742</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 90</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00261_jpg.rf.153cf2d9fd5646cc353d647334bb0562.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">59</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.04</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 59</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00322_jpg.rf.10b6f256b37204c15bde14b517d73926.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">140</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.163</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 140</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00360_jpg.rf.c06d801a4a4ddca29f1e0a23f0461431.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">218</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.372</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 218 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00371_jpg.rf.7cd7dd76972e7272d531d513f355d402.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">275</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.985</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 275</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00379_jpg.rf.5bf7422ea99eee2ccd18f9176e63c5ab.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">332</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.327</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 332</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00445_jpg.rf.3ea672353576a095dd53ff4b8d676b96.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">162</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.051</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 162</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00466_jpg.rf.61a5c2d864458735acb51a138b7387a3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">486</td>
+  <td class="n">16</td>
+  <td class="n">16</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.617</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 486</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00472_jpg.rf.594b19ee1a25a271775f4374bf68f70d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">204</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.018</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 204</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00482_jpg.rf.36540c5731a8a855b00c0704527a67d1.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">483</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.312</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 483 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00491_jpg.rf.178d0f1d2d0096d2eaf94c48df38d8dc.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">55</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.038</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 55</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00495_jpg.rf.e204bee6f1a59671a851e28517fc339a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">803</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>pa</td>
+  <td class="n">2.703</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant pa · chars 803</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00521_jpg.rf.177f83988f29ec0ca9ef8a6e527dccab.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">40</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.344</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 40</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00523_jpg.rf.d73f282fc58572266de91e41598e1d14.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">70</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.147</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 70</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00531_jpg.rf.e988cd79c32a226046db3971e1d59aee.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">287</td>
+  <td class="n">17</td>
+  <td class="n">17</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.591</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 287</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00535_jpg.rf.2a10cb3365c0e3f4f211935e5f15e7fa.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">172</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.349</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 172</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00544_jpg.rf.d50f1278dd2fbe98f13c2d0cfc0342fb.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">147</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.204</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 147</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00591_jpg.rf.c4d31007d820267b05a0fd4ae278a2e4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">66</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>lv</td>
+  <td class="n">1.395</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant lv · chars 66</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00598_jpg.rf.1be2611499d7fdc84d0f547cc327e4ac.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">174</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.171</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 174</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00615_jpg.rf.42a570662ea08cf319817c9a0c057c9d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">195</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.469</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 195</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00621_jpg.rf.9c655564f85f891c84bd9585c80be171.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">157</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>da</td>
+  <td class="n">1.453</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant da · chars 157</td></tr>
+    </tbody>
+  </table>
+  </div>
+</details>
+<details class="split-details" open>
+  <summary><strong>valid</strong> — 9 image(s) · per-image analysis</summary>
+  <div class="wrap">
+  <table>
+<thead>
+      <tr>
+        <th>Split</th>
+        <th>Path (in zip)</th>
+        <th>OK</th>
+        <th>Error</th>
+        <th>Text len</th>
+        <th>Vision blocks</th>
+        <th>Returned blocks</th>
+        <th>Size W×H</th>
+        <th>Geometry conf</th>
+        <th>Compliance (agent)</th>
+        <th>Dominant lang</th>
+        <th>Duration s</th>
+        <th>Silent ink</th>
+        <th>GSTIN count</th>
+        <th>Analysis (per image)</th>
+      </tr>
+    </thead>
+    <tbody>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00003_jpeg_jpg.rf.21df86739eee50353d522cd6e0489ec8.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">81</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>te</td>
+  <td class="n">1.398</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant te · chars 81</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00051_jpg.rf.ef545b24b58989a600a58863e3b3a81e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">275</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.159</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 275</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00056_jpeg_jpg.rf.b4ec4db23c4d341a31bdd393587c0b6b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">149</td>
+  <td class="n">14</td>
+  <td class="n">14</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.609</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 149</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00061_jpg.rf.29033a07845a51a493a45d4d0f8b38b3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">223</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.536</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 223 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00066_png_jpg.rf.02ac6fd581290e4917e15b6f3d64efa6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">249</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.119</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 249 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00070_png_jpg.rf.c5a4bd2469ca57e4bd93485045abab4e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">109</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">0.8</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.784</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 0.8 · agent FAIL · dominant en · chars 109</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00074_png_jpg.rf.e20d7209f259d09f97f2136658d26d07.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">149</td>
+  <td class="n">15</td>
+  <td class="n">15</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.822</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 149</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00079_png_jpg.rf.a605bcbbfae964677dfb3e89d27de8b3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">108</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.608</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 108</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00099_png_jpg.rf.38d5fba94fd637a25daf79d09c0da0b2.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">23</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>ga</td>
+  <td class="n">1.471</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant ga · chars 23</td></tr>
+    </tbody>
+  </table>
+  </div>
+</details>
+
+
+  <h2>All 171 images (single table · scroll or copy)</h2>
+  <div class="wrap">
+  <table>
+<thead>
+      <tr>
+        <th>Split</th>
+        <th>Path (in zip)</th>
+        <th>OK</th>
+        <th>Error</th>
+        <th>Text len</th>
+        <th>Vision blocks</th>
+        <th>Returned blocks</th>
+        <th>Size W×H</th>
+        <th>Geometry conf</th>
+        <th>Compliance (agent)</th>
+        <th>Dominant lang</th>
+        <th>Duration s</th>
+        <th>Silent ink</th>
+        <th>GSTIN count</th>
+        <th>Analysis (per image)</th>
+      </tr>
+    </thead>
+    <tbody>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00000_jpg.rf.27f91fbc25b01cb8068112abde6661e4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">339</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.85</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 339 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00002_jpg.rf.f02e675c507153d93124b300ae4889db.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">160</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.511</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 160</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00004_jpeg_jpg.rf.4e2f4514e816d961e7ed58bc461b5e1e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">124</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.82</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 124</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00005_jpeg_jpg.rf.8c3f94fd8fa322236f21de52ab040d75.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">284</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.322</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 284</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00009_jpeg_jpg.rf.64f60c95fad69557da079d7b22252047.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">173</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.844</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 173</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00013_jpeg_jpg.rf.f56fc6e1b1e0145b69271af1cd466d42.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">153</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.612</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 153 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00014_jpeg_jpg.rf.c986e3781bba9f989f7a08035ebddb7a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">180</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.745</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 180 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00016_jpeg_jpg.rf.123db5293ea8c57e155951ed452a806e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">176</td>
+  <td class="n">15</td>
+  <td class="n">15</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.271</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 176 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00017_jpeg_jpg.rf.35424b916d9b91e6959ec6c1a8d67571.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">289</td>
+  <td class="n">17</td>
+  <td class="n">17</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.452</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 289</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00018_jpeg_jpg.rf.a9c3c65ffd5b88e4c26d057acbebb748.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">48</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.114</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 48</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00019_jpeg_jpg.rf.47d9e5f52f3d2ead54364277933bf9af.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">322</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.727</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 322</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00020_jpeg_jpg.rf.93e44157ce1767166b7046112b5c0f27.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">16</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.278</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 16</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00022_jpeg_jpg.rf.3ec5a1fe717299a758734001540aa329.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">278</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.252</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 278</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00023_jpeg_jpg.rf.de49a35d8e58827fbc72eff9a7465320.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">127</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>hi</td>
+  <td class="n">1.319</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant hi · chars 127</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00024_jpeg_jpg.rf.2ca66c2360d38fa2598f7c8ea311eccf.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">110</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>yo</td>
+  <td class="n">1.112</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant yo · chars 110</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00025_jpeg_jpg.rf.75b34b4d5b3816035c758ff886cd982e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">251</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.502</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 251 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00026_jpeg_jpg.rf.aea3bf78ecb20e01bbc3e8357128505d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">295</td>
+  <td class="n">15</td>
+  <td class="n">15</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.618</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 295</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00027_jpeg_jpg.rf.d8f7c3fd52c9d16b53af848ba241b3e4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">199</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.306</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 199 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00028_jpg.rf.0f366867128bc0d1756a1812268b635b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">319</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.926</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 319 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00030_jpeg_jpg.rf.75c906a2bb1b3e2d91cc0ed91f8500a0.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">138</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.076</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 138 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00031_jpg.rf.a0150cffc3af56ca2467673c271d34b4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">139</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.06</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 139</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00033_jpeg_jpg.rf.c55a55a4888e2a323548c19c5549c4ff.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">211</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.413</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 211</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00034_jpg.rf.adeebc127c2f8eb8369b22fb071a3c02.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">211</td>
+  <td class="n">15</td>
+  <td class="n">15</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.519</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 211 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00035_jpg.rf.f3acd7a696f0a27af0e4127b5239d118.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">252</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.166</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 252</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00036_jpeg_jpg.rf.1d96e5c30c369e8b2476a083d46edbd6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">102</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.256</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 102</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00038_jpeg_jpg.rf.21a490d30ea37e41f2586dfc25315997.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">243</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.56</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 243</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00039_jpeg_jpg.rf.6cb3681932326af1bcff9cfb63112d84.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">25</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.238</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 25</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00040_jpeg_jpg.rf.88f10ae07763db24e5377282b4eb480d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">280</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.593</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 280</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00041_jpg.rf.33aeff5dffc6224f653f817daf779d94.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">197</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.277</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 197</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00043_jpg.rf.3ed72872d46916ecbeabf4ce42cd5fa0.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">42</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.475</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 42</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00044_jpg.rf.343bdb15e9ff1cef25e92c584ef344e2.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">432</td>
+  <td class="n">20</td>
+  <td class="n">20</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.35</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 432</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00046_jpg.rf.23040700ff37371474d70a986375ac75.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">64</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.146</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 64</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00053_jpeg_jpg.rf.845903390d1e96684b4243176e64987d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">129</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>hi</td>
+  <td class="n">1.338</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant hi · chars 129</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00059_jpeg_jpg.rf.e35c3fbb0c711450184a5c3c62e8443c.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">431</td>
+  <td class="n">19</td>
+  <td class="n">19</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.556</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 431</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00060_jpg.rf.0cc3fbfa520d3d5fad94588f3c88c7fa.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">433</td>
+  <td class="n">13</td>
+  <td class="n">13</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>hi</td>
+  <td class="n">51.751</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant hi · chars 433</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00063_jpg.rf.9ea050f5f4417a86aad6460e6a8be65a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">128</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>und</td>
+  <td class="n">1.539</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant und · chars 128</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00065_png_jpg.rf.5b2fc6c047496b8d7e44d8c2e9ce93c6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">96</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.154</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 96 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00067_png_jpg.rf.588029648c56c1fb530a846822b202aa.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">196</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.834</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 196</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00068_png_jpg.rf.8f3ae32524b66fdea6ae0749cca140cd.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">118</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>gom</td>
+  <td class="n">1.493</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant gom · chars 118 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00069_png_jpg.rf.73bbc0e1261757126e7ead4995fdd543.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">491</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.692</td>
+  <td>no</td>
+  <td class="n">2</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 491 · GSTIN fields ×2</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00073_png_jpg.rf.d2b7f93530eef7d5ac729e8d69275ef2.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">9</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">0.718</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.205</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 0.718 · agent FAIL · dominant en · chars 9</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00075_png_jpg.rf.001f0ee0bde1af8de6d93cb700cbcd33.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">164</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">0.924</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.15</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 0.924 · agent FAIL · dominant en · chars 164</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00076_png_jpg.rf.c5281e50ec47f9f0a0bf594d686869f6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">62</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.359</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 62</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00077_png_jpg.rf.9c2911ba3aa16caa255f701071ffd42c.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">200</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.259</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 200</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00081_png_jpg.rf.602f98071312aa10a25b399d5e52a627.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">306</td>
+  <td class="n">14</td>
+  <td class="n">14</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.558</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 306</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00083_png_jpg.rf.4c29897b5793db21b12492d23bdab530.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">297</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.159</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 297</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00088_jpeg_jpg.rf.572ae38250cb1672ae19006510c22936.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">177</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.459</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 177</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00090_jpg.rf.df95bef7b57795a922cb2dd8851fb0a1.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">292</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.43</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 292 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00091_jpeg_jpg.rf.3b818d5dde23980afea5ac78d3338316.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">56</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.934</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 56</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00092_jpg.rf.0b1be09250ddf83d7c30dad8f0d83112.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">229</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.179</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 229 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00094_jpeg_jpg.rf.48712cd2a6ca78cb23bc57c2d37758d8.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">367</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.089</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 367</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00096_jpeg_jpg.rf.0967b2bdb0b7fc066046dc1dd3760608.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">287</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.453</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 287</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-00101_jpeg_jpg.rf.cc7203625187e5ed10a124b44de15edb.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">54</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.132</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 54</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00003_jpg.rf.432c2d27db9e7ab688fd80d80abcc381.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">242</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.391</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 242</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00015_jpg.rf.db1e8a9f8a092799ea2476ef6f1cf99d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">129</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.273</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 129</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00019_jpg.rf.1b23c67799484be170f11cf0197c9271.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">399</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.501</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 399</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00025_jpg.rf.8936c015b2abc8dc7683205854f607b8.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">337</td>
+  <td class="n">18</td>
+  <td class="n">18</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>und</td>
+  <td class="n">2.822</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant und · chars 337</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00034_jpg.rf.8b769879e6004cb63f8205215a96fb47.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">174</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.706</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 174</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00038_jpg.rf.c20768de9e58e36d6141b5097afb6616.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">100</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.301</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 100</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00045_jpg.rf.bd8419e66cfecfb899f210d193e8d9b7.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">502</td>
+  <td class="n">18</td>
+  <td class="n">18</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.298</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 502</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00063_jpg.rf.a773bf66426ca3fc16c90733e4b3bb96.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">80</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>eo</td>
+  <td class="n">1.08</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant eo · chars 80</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00064_jpg.rf.e19bb98312f02f2bfa3b411919ec21e3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">482</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.239</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 482</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00065_jpg.rf.5f247e83d951df0c832bceeb00d07ae0.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">268</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.287</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 268</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00068_jpg.rf.078a3dc94ee4b4a3d598caae8e3e5423.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">157</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.316</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 157 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00075_jpg.rf.c413f0d6aaf9df46dc8ef2bd5033a71d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">324</td>
+  <td class="n">19</td>
+  <td class="n">19</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.837</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 324 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00084_jpg.rf.5d5d16693acdca408123550488975849.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">337</td>
+  <td class="n">13</td>
+  <td class="n">13</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.5</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 337</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00100_jpg.rf.bd0ea07f6c12a612668dda1a7b02fa9b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">171</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>kn</td>
+  <td class="n">1.191</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant kn · chars 171</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00112_jpg.rf.a51a3b0ad454e8b9dec9c97d11cd0eb9.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">142</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.332</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 142</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00125_jpg.rf.e85e98f70a9fb1879fc66d54fedc1ac7.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">148</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>te</td>
+  <td class="n">0.978</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant te · chars 148</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00127_jpg.rf.d46593a3e04cedc5ab602df84b15e0c4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">400</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.202</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 400</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00129_jpg.rf.9c538bd01015e7323f0e9ea54ef8e3bd.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">243</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.533</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 243</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00144_jpg.rf.d1c41eb3c6da5164f1e1e6f2b3ccc93d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">213</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.15</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 213</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00168_jpg.rf.2adf7f619ac33b3dfcca6b69f9b8a898.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">317</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">10.772</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 317 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00169_jpg.rf.96307405fc0dde1567efc114fcdeb529.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">302</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.216</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 302 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00178_jpg.rf.588fa90821cdaf88f1c1c6a6d29fb597.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">170</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.312</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 170</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00182_jpg.rf.91b32350e28ccd38b455847ddeb14e58.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">110</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.404</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 110</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00191_jpg.rf.7bddc953562c53b3600177a9ba02e0ea.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">197</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.223</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 197</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00195_jpg.rf.e3cb6a31f232eb8299378b61bf8cc389.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">113</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.077</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 113</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00199_jpg.rf.9c84f36f1ab56c9e86f51761afa04bf8.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">221</td>
+  <td class="n">13</td>
+  <td class="n">13</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.262</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 221</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00200_jpg.rf.8ac95250284fce1cfa20e4e8cc3943c3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">158</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.415</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 158</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00208_jpg.rf.2efb09cefeb57a5361bc1bfa356e4586.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">282</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.981</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 282</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00235_jpg.rf.33573b03d5704e2c3ff95b748a717b3e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">527</td>
+  <td class="n">23</td>
+  <td class="n">23</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.163</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 527</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00236_jpg.rf.8279f89d190fa5e6fe3d827d625bf501.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">241</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">4.963</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 241 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00242_jpg.rf.ede26a229e91a85e98e7902ab7140193.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">350</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.067</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 350 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00247_jpg.rf.96009753548c90f207d418c2c9aa05f6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">239</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.241</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 239</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00269_jpg.rf.0d27895596efa5ce4d41fdaf6e12cefc.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">252</td>
+  <td class="n">18</td>
+  <td class="n">18</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.404</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 252</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00276_jpg.rf.6725d74b52c285f85f465d5652550302.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">315</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.146</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 315 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00280_jpg.rf.eb1688a5c420a2d5ab7bfd80b84cf62f.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">153</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.057</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 153</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00295_jpg.rf.fc8896eb304d6f0a59f728a831e2fe96.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">71</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.114</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 71</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00318_jpg.rf.e059d4f353922125c385ff24bac24903.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">92</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.783</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 92</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00336_jpg.rf.162c3076509e5510f62c70a77040bc05.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">319</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.977</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 319 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00339_jpg.rf.bf2296b5701f0e50ed0a2dc2a350a0ee.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">16</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.538</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 16</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00366_jpg.rf.5736485eb9d1f2973204d714ea0dd923.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">296</td>
+  <td class="n">13</td>
+  <td class="n">13</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.048</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 296</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00387_jpg.rf.624bc92ea44da893e5755631e0a7034c.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">169</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.292</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 169</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00389_jpg.rf.c801b8f36f5b450d309941d3d67835da.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">247</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.2</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 247</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00415_jpg.rf.e677fd36ef0ee3bfe551108d223f32ed.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">269</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.33</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 269</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00416_jpg.rf.2e2799d76d8dc3eb339449b4e2c94c06.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">252</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.066</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 252</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00426_jpg.rf.cf9b81767ce07fa4f7d441389916cf02.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">249</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.013</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 249</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00428_jpg.rf.e3224b79134a2b3720780eeb04d03b34.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">190</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.32</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 190</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00431_jpg.rf.2e5b330a8211adf0159ddbf020c969dd.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">239</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.37</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 239</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00438_jpg.rf.234f1b6c71fcb37f352d429a3748d12f.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">82</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.976</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 82</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00441_jpg.rf.3d890464df05c4a9beac09e4b71f3b47.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">503</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.307</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 503</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00443_jpg.rf.bd6794cff1f6ca1c672498d1c6c4a5bc.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">499</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.348</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 499</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00455_jpg.rf.3d81df3afb6535c0c5e7bbac375d0f93.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">471</td>
+  <td class="n">20</td>
+  <td class="n">20</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.318</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 471</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00469_jpg.rf.3096b0a059375f80b5404728a1dc528b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">400</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.359</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 400 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00498_jpg.rf.6a9427a213c05eab6de36f331c8e6bcb.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">352</td>
+  <td class="n">14</td>
+  <td class="n">14</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.386</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 352</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00510_jpg.rf.bb8a79aff1e04351b6d33a2bcf9390ef.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">113</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.244</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 113</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00511_jpg.rf.e76d21e3f1acd2bc27a4333b57238053.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">204</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.084</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 204</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00534_jpg.rf.aa2b4e65f55256ee73c049f8e39d6eac.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">289</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.265</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 289 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00541_jpg.rf.839595fce6e82d086482964f6a64bc89.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">436</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.079</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 436</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00567_jpg.rf.a46d7c868c0d1cc7935da307e5c6fde4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">192</td>
+  <td class="n">10</td>
+  <td class="n">10</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.626</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 192</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00574_jpg.rf.793544c7941bc9bed37cfe3757291a97.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">201</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.182</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 201</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00582_jpg.rf.fec23d29a74b3889860ed94fbdf8a443.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">92</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>und</td>
+  <td class="n">0.853</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant und · chars 92</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00596_jpg.rf.14aaca1a8a0da7d19e0cc886225d9560.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">269</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.2</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 269</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00609_jpg.rf.71a60c3b941cee64a7ce979eddec3a3b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">256</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.452</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 256 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00618_jpg.rf.568ac647dfacdadefd2852bf15c89f61.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">270</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.208</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 270</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00620_jpg.rf.16a8d3c3095a6b99fdf26f493b57f198.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">263</td>
+  <td class="n">18</td>
+  <td class="n">18</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.547</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 263</td></tr>
+<tr>
+  <td>train</td>
+  <td class="path">train/store-front-v2-00624_jpg.rf.f205bfbb602cfb57665043857bf26eab.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">348</td>
+  <td class="n">11</td>
+  <td class="n">11</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.82</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 348</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00037_jpg.rf.c01cc1644777ac447d4c2d4562585fa6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">243</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.519</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 243</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00045_jpg.rf.3212a189f8beced7ffc4d0146c775bf4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">42</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.299</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 42</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00049_jpg.rf.2b38d0c9e11e872173f73b889f71f09f.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">262</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.071</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 262</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00072_png_jpg.rf.9be1f265f85494520d091e361c3bdac9.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">18</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.34</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 18</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00078_png_jpg.rf.58f013fcd34af3334e323e20a87897ee.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">213</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.154</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 213</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-00080_png_jpg.rf.73cfa71a9cc4e30fe9beb99a898c77ba.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">221</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.324</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 221</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00002_jpg.rf.b5a01bb283e3262f225eacd6dd9e95dd.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">122</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.297</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 122</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00028_jpg.rf.dd7444d4358f60dca2cb5ca5e1b05412.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">85</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>hi</td>
+  <td class="n">0.964</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant hi · chars 85</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00037_jpg.rf.3e4f8219a9fa539a8a372e4c86857e9d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">180</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.948</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 180</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00046_jpg.rf.07134ea6d8bdf94908ba7b4bb49653aa.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">73</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.113</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 73</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00048_jpg.rf.adea3704d21dfd3d1215e37eb2190637.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">109</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.596</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 109</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00062_jpg.rf.fad3a2a57d63f1d392fd099c7665ce34.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">104</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>it</td>
+  <td class="n">1.052</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant it · chars 104</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00072_jpg.rf.a909165160be21455998cba7e9159aca.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">302</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.878</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 302</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00082_jpg.rf.a193d1b00a36ca5e4f80d79c20e401c1.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">111</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.193</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 111</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00089_jpg.rf.6b9b29f6a84be1206d037968d9a4e86a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">158</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.055</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 158</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00092_jpg.rf.57483c9ff029c23b58e2a2ae47504add.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">313</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>co</td>
+  <td class="n">1.16</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant co · chars 313</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00099_jpg.rf.0d4359a9fdcc0f5289b5a9b2d965f0be.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">344</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.111</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 344</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00149_jpg.rf.612a1e2b848c42f522321704a6092892.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">177</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.09</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 177</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00162_jpg.rf.1e6f21a5409da444aabfb00a6fc33165.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">556</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.266</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 556</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00164_jpg.rf.1021403f9020a5358739558b0334b15a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">134</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.094</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 134</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00173_jpg.rf.3dbf0dbe15b8ce848ad9c7047f1d6c5c.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">190</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.189</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 190</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00232_jpg.rf.a33d6d2f516a8f5e02409111cda1a1a4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">397</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.842</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 397</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00233_jpg.rf.660dda19f8cd9d9abddb3779c48bd8df.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">227</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.423</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 227</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00243_jpg.rf.247ba5eb8eb3b3fbcd10a588de1241ea.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">90</td>
+  <td class="n">4</td>
+  <td class="n">4</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.742</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 90</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00261_jpg.rf.153cf2d9fd5646cc353d647334bb0562.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">59</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.04</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 59</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00322_jpg.rf.10b6f256b37204c15bde14b517d73926.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">140</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.163</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 140</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00360_jpg.rf.c06d801a4a4ddca29f1e0a23f0461431.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">218</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">3.372</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 218 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00371_jpg.rf.7cd7dd76972e7272d531d513f355d402.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">275</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">0.985</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 275</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00379_jpg.rf.5bf7422ea99eee2ccd18f9176e63c5ab.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">332</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.327</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 332</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00445_jpg.rf.3ea672353576a095dd53ff4b8d676b96.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">162</td>
+  <td class="n">3</td>
+  <td class="n">3</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.051</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 162</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00466_jpg.rf.61a5c2d864458735acb51a138b7387a3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">486</td>
+  <td class="n">16</td>
+  <td class="n">16</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.617</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 486</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00472_jpg.rf.594b19ee1a25a271775f4374bf68f70d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">204</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.018</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 204</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00482_jpg.rf.36540c5731a8a855b00c0704527a67d1.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">483</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.312</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 483 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00491_jpg.rf.178d0f1d2d0096d2eaf94c48df38d8dc.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">55</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.038</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 55</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00495_jpg.rf.e204bee6f1a59671a851e28517fc339a.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">803</td>
+  <td class="n">9</td>
+  <td class="n">9</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>pa</td>
+  <td class="n">2.703</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant pa · chars 803</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00521_jpg.rf.177f83988f29ec0ca9ef8a6e527dccab.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">40</td>
+  <td class="n">1</td>
+  <td class="n">1</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.344</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 40</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00523_jpg.rf.d73f282fc58572266de91e41598e1d14.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">70</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.147</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 70</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00531_jpg.rf.e988cd79c32a226046db3971e1d59aee.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">287</td>
+  <td class="n">17</td>
+  <td class="n">17</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.591</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 287</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00535_jpg.rf.2a10cb3365c0e3f4f211935e5f15e7fa.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">172</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.349</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 172</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00544_jpg.rf.d50f1278dd2fbe98f13c2d0cfc0342fb.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">147</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.204</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 147</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00591_jpg.rf.c4d31007d820267b05a0fd4ae278a2e4.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">66</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>lv</td>
+  <td class="n">1.395</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant lv · chars 66</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00598_jpg.rf.1be2611499d7fdc84d0f547cc327e4ac.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">174</td>
+  <td class="n">5</td>
+  <td class="n">5</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.171</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 174</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00615_jpg.rf.42a570662ea08cf319817c9a0c057c9d.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">195</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.469</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 195</td></tr>
+<tr>
+  <td>test</td>
+  <td class="path">test/store-front-v2-00621_jpg.rf.9c655564f85f891c84bd9585c80be171.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">157</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>da</td>
+  <td class="n">1.453</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant da · chars 157</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00003_jpeg_jpg.rf.21df86739eee50353d522cd6e0489ec8.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">81</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>te</td>
+  <td class="n">1.398</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant te · chars 81</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00051_jpg.rf.ef545b24b58989a600a58863e3b3a81e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">275</td>
+  <td class="n">8</td>
+  <td class="n">8</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.159</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 275</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00056_jpeg_jpg.rf.b4ec4db23c4d341a31bdd393587c0b6b.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">149</td>
+  <td class="n">14</td>
+  <td class="n">14</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.609</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 149</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00061_jpg.rf.29033a07845a51a493a45d4d0f8b38b3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">223</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.536</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 223 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00066_png_jpg.rf.02ac6fd581290e4917e15b6f3d64efa6.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">249</td>
+  <td class="n">12</td>
+  <td class="n">12</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.119</td>
+  <td>no</td>
+  <td class="n">1</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 249 · GSTIN fields ×1</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00070_png_jpg.rf.c5a4bd2469ca57e4bd93485045abab4e.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">109</td>
+  <td class="n">7</td>
+  <td class="n">7</td>
+  <td class="n">640×640</td>
+  <td class="n">0.8</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">2.784</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 0.8 · agent FAIL · dominant en · chars 109</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00074_png_jpg.rf.e20d7209f259d09f97f2136658d26d07.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">149</td>
+  <td class="n">15</td>
+  <td class="n">15</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.822</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 149</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00079_png_jpg.rf.a605bcbbfae964677dfb3e89d27de8b3.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">108</td>
+  <td class="n">6</td>
+  <td class="n">6</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>en</td>
+  <td class="n">1.608</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant en · chars 108</td></tr>
+<tr>
+  <td>valid</td>
+  <td class="path">valid/store-front-00099_png_jpg.rf.38d5fba94fd637a25daf79d09c0da0b2.jpg</td>
+  <td>ok</td>
+  <td>—</td>
+  <td class="n">23</td>
+  <td class="n">2</td>
+  <td class="n">2</td>
+  <td class="n">640×640</td>
+  <td class="n">1.0</td>
+  <td>FAIL</td>
+  <td>ga</td>
+  <td class="n">1.471</td>
+  <td>no</td>
+  <td class="n">0</td>
+  <td class="analysis">threshed geometry conf 1.0 · agent FAIL · dominant ga · chars 23</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="meta">Source: <code>backend/data/coco_batch_ocr_report.json</code> · Regenerate: <code>python scripts/coco_batch_report_to_html.py</code></p>
+</body>
+</html>

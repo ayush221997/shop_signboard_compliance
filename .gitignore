@@ -1,0 +1,14 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+backend/.env
+frontend/.env
+node_modules/
+frontend/dist/
+frontend/node_modules/
+*.log
+.DS_Store
+backend/data/
+backend/ocr_audit.db

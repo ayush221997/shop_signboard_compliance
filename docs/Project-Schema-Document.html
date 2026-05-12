@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OCR / Compliance — Project schema document</title>
+  <style>
+    :root {
+      --text: #1a1a1a;
+      --muted: #4b5563;
+      --border: #d1d5db;
+      --bg: #ffffff;
+      --accent: #2563eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--bg);
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.5rem;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0 0 2rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.75rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+    h2:first-of-type { border-top: none; padding-top: 0; }
+    h3 { font-size: 1rem; margin: 1.25rem 0 0.5rem; color: var(--muted); }
+    p, li { margin: 0.5rem 0; }
+    a { color: var(--accent); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 0.75rem 0 1rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.55rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f3f4f6; font-weight: 600; }
+    code, .mono { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.88em; }
+    .diagram {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+      margin: 0.75rem 0;
+    }
+    .toc { margin: 1.5rem 0 2rem; }
+    .toc ol { margin: 0.25rem 0; padding-left: 1.25rem; }
+    .toc a { text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    @media print {
+      body { max-width: none; padding: 0.5in; }
+      a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: var(--muted); }
+      h2 { break-after: avoid; }
+      table, .diagram { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Project schema — OCR / compliance</h1>
+    <p class="meta">Print or save as PDF: use your browser’s <strong>Print</strong> dialog. <strong>Markdown</strong> source: <code>docs/Project-Schema-Document.md</code> (same content; open in Word or GitHub). Machine-readable API: <code>/openapi.json</code> (FastAPI).</p>
+  </header>
+
+  <nav class="toc" aria-label="Table of contents">
+    <strong>Contents</strong>
+    <ol>
+      <li><a href="#s1">Database</a></li>
+      <li><a href="#s2">API model: OcrResult</a></li>
+      <li><a href="#s3">Other API bodies</a></li>
+      <li><a href="#s4">Frontend</a></li>
+      <li><a href="#s5">File storage</a></li>
+      <li><a href="#s6">OpenAPI</a></li>
+    </ol>
+  </nav>
+
+  <p>This document describes the <strong>persistence layer</strong>, the <strong>OCR API contract</strong> (<code>OcrResult</code> and related types), and how they relate. The runtime source of truth is the Pydantic models in <code>backend/main.py</code> and <code>backend/db_models.py</code>.</p>
+
+  <h2 id="s1">1. Database</h2>
+  <p><strong>Engine:</strong> <code>DATABASE_URL</code> (PostgreSQL) or default <code>sqlite:///./ocr_audit.db</code> (<code>backend/database.py</code>).</p>
+
+  <h3>1.1 Table <code>audit_records</code></h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Column</th>
+        <th>Type</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>UUID, PK</td><td>Default <code>uuid.uuid4()</code></td></tr>
+      <tr><td><code>user_id</code></td><td>VARCHAR(256), nullable, indexed</td><td>Optional client id (e.g. from <code>localStorage</code>)</td></tr>
+      <tr><td><code>image_url</code></td><td>TEXT, not null</td><td>Public URL of stored upload (local <code>/files/...</code> or S3/CDN)</td></tr>
+      <tr><td><code>raw_ocr_json</code></td><td>JSON / JSONB, not null</td><td>Full <code>OcrResult</code> as returned by <code>POST /api/ocr</code> (see §2)</td></tr>
+      <tr><td><code>verified_text_json</code></td><td>JSON / JSONB, nullable</td><td>Map of block index (string) → user-corrected text</td></tr>
+      <tr><td><code>location_data</code></td><td>JSON / JSONB, nullable</td><td><code>state_code</code>, <code>city</code>, <code>latitude</code>, <code>longitude</code>, <code>geocoded</code>, etc.</td></tr>
+      <tr><td><code>compliance_status</code></td><td>VARCHAR(32), not null</td><td><code>PENDING</code> | <code>PASS</code> | <code>FAIL</code> | <code>UNCERTAIN</code> (<code>ComplianceStatus</code>)</td></tr>
+      <tr><td><code>location_state_code</code></td><td>VARCHAR(8), nullable, indexed</td><td>Denormalized for reporting</td></tr>
+      <tr><td><code>threshed_dominant_lang</code></td><td>VARCHAR(16), nullable</td><td>BCP-47 (dominant threshed script)</td></tr>
+      <tr><td><code>threshed_l1_code</code> … <code>threshed_l3_code</code></td><td>VARCHAR(8), nullable</td><td>Top 3 threshed languages by share</td></tr>
+      <tr><td><code>threshed_l1_ratio</code> … <code>threshed_l3_ratio</code></td><td>DOUBLE / REAL, nullable</td><td>Ratios 0–1 for those ranks</td></tr>
+      <tr><td><code>created_at</code></td><td>timestamptz, not null</td><td>Server default <code>now()</code></td></tr>
+    </tbody>
+  </table>
+  <p><code>init_db()</code> runs <code>Base.metadata.create_all</code> and alters existing databases to add columns from <code>_ensure_audit_columns</code> when missing.</p>
+  <p class="mono"><strong>Entity (no foreign keys to other tables):</strong> single audit store; files live on disk or S3.</p>
+  <div class="diagram" aria-label="ER diagram in text form">audit_records
+├── id (uuid, PK)
+├── user_id, image_url
+├── raw_ocr_json, verified_text_json, location_data
+├── compliance_status, location_state_code
+├── threshed_dominant_lang
+├── threshed_l1_code/ratio … l3_code/ratio
+└── created_at</div>
+
+  <h2 id="s2">2. API model: <code>OcrResult</code> and <code>raw_ocr_json</code></h2>
+  <p><code>OcrResult</code> is the JSON of <code>POST /api/ocr</code> and <code>PUT /api/audit/{id}</code>. The same object is stored in <code>raw_ocr_json</code> (server may add <code>audit_id</code> and refresh compliance/location on update).</p>
+
+  <h3>2.1 Top-level fields</h3>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>text</code></td><td>string</td><td>Full block text (Vision)</td></tr>
+      <tr><td><code>image_width</code>, <code>image_height</code></td><td>int</td><td>Pixel dimensions (Vision first page)</td></tr>
+      <tr><td><code>languages</code></td><td>LanguageHint[]</td><td>Page-level hints</td></tr>
+      <tr><td><code>blocks</code></td><td>TextBlock[]</td><td>Per-region text, boxes, words, optional translation</td></tr>
+      <tr><td><code>logos</code></td><td>LogoResult[]</td><td>Logo detections</td></tr>
+      <tr><td><code>gstin</code></td><td>GstinFinding[]</td><td>Extracted GSTINs + validation</td></tr>
+      <tr><td><code>compliance</code></td><td>ComplianceInfo</td><td>Rules + optional <code>governance</code></td></tr>
+      <tr><td><code>translated_text</code></td><td>string</td><td>English when Gemini has filled</td></tr>
+      <tr><td><code>signboard_geometry</code></td><td>object | null</td><td>Threshed-ink / OpenCV metrics; null for PDFs or on failure</td></tr>
+      <tr><td><code>is_pdf_ocr</code></td><td>bool</td><td>True when input was PDF</td></tr>
+      <tr><td><code>audit_id</code></td><td>string | null</td><td>UUID when a row was saved</td></tr>
+      <tr><td><code>resolved_location</code></td><td>object | null</td><td><code>state_code</code>, <code>city</code>, <code>state_name</code>, <code>latitude</code>, <code>longitude</code></td></tr>
+      <tr><td><code>verified_text_json</code></td><td>object | null</td><td>Block-index → corrections (when reloaded from DB)</td></tr>
+      <tr><td><code>image_metadata</code></td><td>object | null</td><td>File + EXIF + dimensions (§2.3)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 Nested DTOs (summary)</h3>
+  <ul>
+    <li><strong>LanguageHint:</strong> <code>code</code> (BCP-47), <code>confidence</code> (0–1)</li>
+    <li><strong>BoundingBox:</strong> <code>x</code>, <code>y</code>, <code>w</code>, <code>h</code></li>
+    <li><strong>NormArea:</strong> <code>x_pct</code>, <code>y_pct</code>, <code>w_pct</code>, <code>h_pct</code>, <code>area_pct</code> (0–100), optional <code>threshed_area_pct</code></li>
+    <li><strong>VerifiedWord:</strong> <code>text</code>, <code>confidence</code>, <code>is_doubtful</code></li>
+    <li><strong>TextBlock:</strong> <code>text</code>, <code>bounds</code>, <code>norm</code>, <code>languages</code>, <code>words</code>, <code>translated_text</code> (optional)</li>
+    <li><strong>LogoResult, GstinFinding, ComplianceInfo, SignboardGeometrySummary</strong> — as implemented in Pydantic (<code>main.py</code>)</li>
+  </ul>
+
+  <h3>2.3 <code>image_metadata</code></h3>
+  <table>
+    <thead><tr><th>Key</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td><code>file</code></td><td><code>name</code>, <code>size_bytes</code>, <code>content_type</code></td></tr>
+      <tr><td><code>raster</code></td><td>Non-PDF: <code>format</code>, dimensions, <code>color_mode</code>, optional <code>exif</code> or <code>error</code>. PDF: short <code>note</code></td></tr>
+      <tr><td><code>vision</code></td><td><code>width</code>, <code>height</code></td></tr>
+      <tr><td><code>pdf</code></td><td><code>{ "is_pdf": true }</code> when applicable</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="s3">3. Other API request/response bodies</h2>
+  <table>
+    <thead><tr><th>Endpoint</th><th>Body / model</th></tr></thead>
+    <tbody>
+      <tr><td><code>POST /api/ocr</code></td><td>multipart: <code>file</code>, optional <code>user_id</code>, <code>state_code</code>, <code>latitude</code>, <code>longitude</code></td></tr>
+      <tr><td><code>PUT /api/audit/{audit_id}</code></td><td>JSON <code>AuditUpdate</code> (<code>user_id</code>, location, <code>state_code</code>, <code>city</code>, <code>verified_text_json</code>)</td></tr>
+      <tr><td><code>POST /api/translate</code></td><td>JSON: <code>texts</code>[], optional <code>languages</code>[]</td></tr>
+      <tr><td><code>POST /api/suggest-corners</code></td><td>multipart: <code>file</code>, optional <code>state_code</code> → <code>SuggestCornersResult</code> (<code>corners</code> 4×<code>[x,y]</code>, <code>method</code>, dimensions)</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="s4">4. Frontend</h2>
+  <p>Types in <code>frontend/src/ocrTypes.ts</code> mirror §2; no second canonical schema.</p>
+
+  <h2 id="s5">5. File storage (not in SQL)</h2>
+  <ul>
+    <li><strong>Local:</strong> <code>LOCAL_STORAGE_DIR</code> or <code>backend/data/uploads/</code>; URL <code>PUBLIC_BASE_URL</code> + <code>/files/{uuid}{ext}</code></li>
+    <li><strong>S3:</strong> if <code>S3_BUCKET</code> is set, same key pattern; <code>S3_PUBLIC_BASE_URL</code> when set</li>
+  </ul>
+  <p><code>image_url</code> always points at the stored object.</p>
+
+  <h2 id="s6">6. OpenAPI</h2>
+  <p>With the FastAPI app running: <strong>Swagger</strong> at <code>/docs</code>, <strong>JSON</strong> at <code>/openapi.json</code>. This document is a companion; the ORM is <code>db_models.py</code>.</p>
+</body>
+</html>

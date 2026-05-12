@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COMPLai · pipeline &amp; compliance — flowcharts</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+      securityLevel: "loose",
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        nodeSpacing: 40,
+        rankSpacing: 48,
+        padding: 16,
+        curve: "basis",
+      },
+      themeVariables: {
+        fontSize: "17px",
+        fontFamily: "Segoe UI, system-ui, sans-serif",
+        primaryTextColor: "#e6edf3",
+        primaryColor: "#21262d",
+        lineColor: "#8b949e",
+        secondaryColor: "#161b22",
+        tertiaryColor: "#0d1117",
+      },
+    });
+  </script>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --b: #30363d;
+      --accent: #58a6ff;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; line-height: 1.55; font-size: 15px; }
+    header { border-bottom: 1px solid var(--b); padding: 1.4rem 1.5rem; background: var(--card); }
+    h1 { font-size: 1.45rem; font-weight: 600; margin: 0 0 0.35rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin: 0; max-width: 44rem; }
+    main { max-width: 56rem; margin: 0 auto; padding: 1.25rem 1.5rem 2.5rem; }
+    h2 { font-size: 1.1rem; font-weight: 600; margin: 1.75rem 0 0.65rem; color: #c9d1d9; border-bottom: 1px solid var(--b); padding-bottom: 0.35rem; }
+    p { color: #c9d1d9; font-size: 0.95rem; }
+    .mermaid { margin: 0.85rem 0; padding: 1rem; background: #0d1117; border: 1px solid var(--b); border-radius: 8px; overflow: auto; }
+    .flow-wide { min-height: 28rem; padding: 0.5rem 0; }
+    .flow-wide .mermaid svg { min-width: 36rem; max-width: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>COMPLai · flowcharts</h1>
+    <p class="subtitle">High-level OCR pipeline and COMPLai <code>evaluate_compliance</code> decision order. Open this file in a browser (Mermaid via CDN). See also <span class="mono">COMPLai-OCR-System-Flow.html</span> for narrative detail.</p>
+  </header>
+  <main>
+    <h2>1. Request &amp; processing pipeline</h2>
+    <p>From upload to <code>POST /api/ocr</code> response. Vision is called without <code>language_hints</code>; <code>state_code</code> only drives rules.</p>
+    <div class="flow-wide">
+    <div class="mermaid">
+flowchart TB
+  U[("Upload image + state/UT in form")] --> D{Decode BGR}
+  D --> S["Upscale if long edge &lt; 1024 px"]
+  S --> P["prepare_bgr_for_document_ocr · optional prebinarize"]
+  P --> V[("Google Cloud Vision: DOCUMENT_TEXT_DETECTION + LOGO")]
+  V --> T["Build blocks, GSTIN, translations"]
+  T --> G[("SignboardGeometryAgent: 1024×1024 warp + threshed ink by script")]
+  G --> R[("get_rules_for_state: required_scripts + min % ")]
+  R --> E[("evaluate_compliance + governance merge")]
+  E --> O[("OcrResult JSON: text, geometry, compliance, audit_id")]
+    </div>
+    </div>
+
+    <h2>2. COMPLai compliance checks (order)</h2>
+    <p>Early exits prevent false passes; ratio tests run only when script allowlists pass.</p>
+    <div class="mermaid">
+flowchart TB
+  A["Location rules and threshed ratios present?"] -->|no| PEND["pending or uncertain"]
+  A -->|yes| B["Aggregate ink by BCP-47 base script"]
+  B --> C["Dominant script in state allowlist?"]
+  C -->|no| F1["FAIL — dominant / jurisdiction"]
+  C -->|yes| D["Every script with over 1.5 percent ink in allowlist?"]
+  D -->|no| F2["FAIL — material ink outside allowlist"]
+  D -->|yes| M["Monolingual exemption for min percent?"]
+  M -->|yes| OK1["PASS — monolingual path"]
+  M -->|no| R["Required primary share vs state minimum percent"]
+  R -->|ok| OK2["PASS — ratio met"]
+  R -->|low| F3["FAIL — primary share too low"]
+    </div>
+  </main>
+</body>
+</html>
